@@ -44,7 +44,7 @@ export function restrictByUserRole(ROLE) {
           [id],
           function(error, results, fields) {
             const user = results[0]
-            if (user.role !== ROLE)
+            if (error || user === undefined || user.role !== ROLE)
               res.status(401).json({
                 status: 'error',
                 key: 'authorization',
