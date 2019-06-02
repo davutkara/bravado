@@ -124,10 +124,24 @@
           </b-card>
         </b-col>
       </b-row>
+
       <hr>
+
       <b-row>
         <b-col md="12">
           <b-card border-variant="light" header="Completed" class="text-center"></b-card>
+        </b-col>
+      </b-row>
+      <hr>
+      <b-row>
+        <b-col md="12">
+          <b-card border-variant="light" header="In Progress" class="text-center"></b-card>
+        </b-col>
+      </b-row>
+      <hr>
+      <b-row>
+        <b-col md="12">
+          <b-card border-variant="light" header="Created Challanges" class="text-center"></b-card>
         </b-col>
       </b-row>
     </b-container>
