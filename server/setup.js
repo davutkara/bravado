@@ -1,8 +1,14 @@
-var mysql = require("mysql");
-var connection = mysql.createConnection({host: "localhost", user: "root", password: "example", database: "bravado"});
+var mysql = require('mysql')
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'example',
+  database: 'bravado'
+})
 
-connection.connect();
-connection.query(`
+connection.connect()
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS user (
     userId int NOT NULL AUTO_INCREMENT UNIQUE,
     role varchar(255) NOT NULL DEFAULT "user",
@@ -14,40 +20,49 @@ CREATE TABLE IF NOT EXISTS user (
     gender varchar(255) NOT NULL,
     CONSTRAINT user_pk PRIMARY KEY (userId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("user ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('user ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS category (
     name varchar(255) NOT NULL UNIQUE,
     creationDate date NOT NULL,
     content varchar(255) NOT NULL,
     CONSTRAINT category_pk PRIMARY KEY (name)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("category ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('category ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS challenge (
-    challengeId int NOT NULL UNIQUE,
+    challengeId int NOT NULL UNIQUE AUTO_INCREMENT,
+    owner int NOT NULL,
     title varchar(255) NOT NULL,
     content varchar(255) NOT NULL,
     startDate date NOT NULL,
     finishDate date NOT NULL,
     reward json NOT NULL,
     goal int NOT NULL,
-    CONSTRAINT challenge_pk PRIMARY KEY (challengeId)
+    CONSTRAINT challenge_pk PRIMARY KEY (challengeId),
+    CONSTRAINT challenge_user FOREIGN KEY challenge_user (owner)
+    REFERENCES user (userId)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("challenge ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('challenge ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS challengecategory (
     challengeId int NOT NULL AUTO_INCREMENT UNIQUE,
     categoryName varchar(255) NOT NULL,
@@ -56,12 +71,14 @@ CREATE TABLE IF NOT EXISTS challengecategory (
     CONSTRAINT challenge_challengecategory FOREIGN KEY challenge_challengecategory (challengeId)
     REFERENCES challenge (challengeId)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("challengecategory ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('challengecategory ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS comment (
     commentId int NOT NULL AUTO_INCREMENT UNIQUE,
     authorId int NOT NULL,
@@ -76,12 +93,14 @@ CREATE TABLE IF NOT EXISTS comment (
     CONSTRAINT user_comment FOREIGN KEY user_comment (authorId)
     REFERENCES user (userId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("comment ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('comment ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS progress (
     progressId int NOT NULL AUTO_INCREMENT UNIQUE,
     challengeId int NOT NULL,
@@ -94,12 +113,14 @@ CREATE TABLE IF NOT EXISTS progress (
     CONSTRAINT user_progress FOREIGN KEY user_progress (userId)
     REFERENCES user (userId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("progress ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('progress ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS submission (
     submissionId int NOT NULL AUTO_INCREMENT UNIQUE,
     progressId int NOT NULL,
@@ -107,12 +128,14 @@ CREATE TABLE IF NOT EXISTS submission (
     CONSTRAINT submission_pk PRIMARY KEY (submissionId),
     CONSTRAINT submission_progress FOREIGN KEY submission_progress (progressId) REFERENCES progress (progressId)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("submission ✔ ");
-});
-connection.query(`
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('submission ✔ ')
+  }
+)
+connection.query(
+  `
 CREATE TABLE IF NOT EXISTS rating (
     approvedByUserId int NOT NULL,
     submissionId int NOT NULL,
@@ -122,10 +145,11 @@ CREATE TABLE IF NOT EXISTS rating (
     CONSTRAINT user_rating FOREIGN KEY user_rating (approvedByUserId)
     REFERENCES user (userId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`, function (error, results, fields) {
-  if (error) 
-    throw error;
-  console.log("rating ✔ ");
-});
+`,
+  function(error, results, fields) {
+    if (error) throw error
+    console.log('rating ✔ ')
+  }
+)
 
-connection.end();
+connection.end()
