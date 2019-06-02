@@ -1,12 +1,30 @@
 <template>
   <b-row class="w-100">
     <b-col>
-      Rotate: {{range}}
-      <b-form-input v-model="range" type="range" :min="0" :max="360"></b-form-input>
+      Rotate: {{rotate}}
+      <b-form-input
+        :value="rotate"
+        @input="val => $emit('update:rotate', val)"
+        type="range"
+        :min="0"
+        :max="360"
+      ></b-form-input>
       Edge: {{edge}}
-      <b-form-input v-model="edge" type="range" :min="3" :max="20"></b-form-input>
+      <b-form-input
+        :value="edge"
+        @input="val => $emit('update:edge', val)"
+        type="range"
+        :min="3"
+        :max="20"
+      ></b-form-input>
       <no-ssr>
-        <color-picker class="m-auto" :width="200" :height="200" v-model="color"></color-picker>
+        <color-picker
+          class="m-auto"
+          :width="200"
+          :height="200"
+          v-model="colorSub"
+          @color-change="val => $emit('update:color', val)"
+        ></color-picker>
       </no-ssr>
     </b-col>
     <b-col>
@@ -49,17 +67,15 @@
 <script>
 import ColorPicker from 'vue-color-picker-wheel'
 export default {
+  props: ['edge', 'rotate', 'color'],
   components: {
     ColorPicker
   },
   data() {
     return {
-      color: '#ffffff',
       p5: null,
-      range: 0,
-      edge: 8,
-
       badgeIndex: 0,
+      colorSub: '#ffffff',
       image: '',
       badgeImages: [
         '/icons/svg/theater.svg',
@@ -149,12 +165,12 @@ export default {
         }
 
         p.draw = function() {
-          const { colorR, colorG, colorB } = self.hexToRgb(self.color)
+          const { colorR, colorG, colorB } = self.hexToRgb(self.colorSub)
           p.background(255)
           p.image(self.image, 0, 0, 150, 150)
           p.fill(colorR, colorG, colorB, 120)
           p.translate(75, 75)
-          p.rotate(self.range)
+          p.rotate(self.rotate)
           p.stroke(0)
           p.polygon(0, 0, 65, self.edge)
           p.noStroke()
