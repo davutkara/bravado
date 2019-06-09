@@ -305,4 +305,91 @@ export default function(router, db, cache) {
       )
     }
   )
+
+  /**
+   * Get  pending approval submissions
+   * Sql query below collect submitted assignments which rated lower than total Approver variable's value except the voter's rating and voter own submissions.
+   * @only user
+   *
+   * @param int     challengeId
+   */
+
+  router.post(
+    '/challenge/submissions/pending',
+    utils(db, cache).restrictByUserRole('user'),
+    (req, res) => {
+      const { challengeId } = req.body
+      const totalApprover = 3
+      db.query(
+        `
+        SELECT 
+          PENDING.submissionId, PENDING.progressId,  PENDING.content, user.name, user.surname, user.gender, user.userId 
+        FROM (
+          SELECT * FROM submission 
+          WHERE NOT EXISTS (
+            SELECT *
+              FROM rating 
+                WHERE 
+                  rating.submissionId = submission.submissionId AND 
+                  rating.approvedByUserId = ? 
+            
+            UNION 
+
+            SELECT COUNT(*) AS totalApprover 
+              FROM rating 
+                WHERE 
+                  rating.submissionId = submission.submissionId AND
+                  rating.rate = 1
+                GROUP BY 
+                  (submissionId) HAVING totalApprover >= ?
+          ) 
+        ) AS PENDING
+        INNER JOIN progress ON progress.progressId = PENDING.progressId
+        INNER JOIN challenge ON challenge.challengeId = progress.challengeId
+        INNER JOIN user ON progress.userId = user.userId
+        WHERE 
+          challenge.challengeId = ? AND
+          progress.userId != ?
+        `,
+        [req.user.userId, totalApprover, challengeId, req.user.userId],
+        function(error, results, fields) {
+          if (error)
+            res.json({ status: 'error', msg: 'Unknown error', error: error })
+          else res.json(results)
+        }
+      )
+    }
+  )
+
+  /**
+   * Rate the submission
+   * @only user
+   *
+   * @param int     submissionId
+   */
+
+  router.post(
+    '/challenge/submissions/rate',
+    utils(db, cache).restrictByUserRole('user'),
+    (req, res) => {
+      const { submissionId, vote } = req.body
+
+      db.query(
+        `
+        INSERT INTO rating (approvedByUserId,submissionId,rate) VALUES (?,?,?)
+        `,
+        [req.user.userId, submissionId, vote],
+        function(error, results, fields) {
+          if (error && error.code === 'ER_DUP_ENTRY')
+            res.json({
+              status: 'error',
+              msg: 'You have rated that submission before.'
+            })
+          else if (error)
+            res.json({ status: 'error', msg: 'Unknown error', error: error })
+          else res.json({ status: 'success' })
+        }
+      )
+    }
+  )
 }

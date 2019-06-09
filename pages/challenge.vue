@@ -46,6 +46,9 @@
           <b-tab title="Feeds">
             <b-card-text>Tab Contents 2</b-card-text>
           </b-tab>
+          <b-tab title="Rete Submissions">
+            <rate-submission :active="isParticipated" :challengeId="$route.params.id"></rate-submission>
+          </b-tab>
           <b-tab title="Participants">
             <b-card-group columns>
               <template
@@ -79,6 +82,7 @@
 <script>
 import bravadoNavigation from '~/components/bravadoNavigation.vue'
 import { mapActions } from 'vuex'
+import rateSubmission from '~/components/rateSubmission.vue'
 export default {
   layout: 'user',
   async asyncData({ store, redirect, route }) {
@@ -143,7 +147,7 @@ export default {
       return this.$store.state.challenge.participants
     }
   },
-  components: { bravadoNavigation },
+  components: { bravadoNavigation, rateSubmission },
   destroyed() {
     this.$store.commit('challenge/RESET_ALL')
   },
