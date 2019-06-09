@@ -8,6 +8,7 @@
       <b-row>
         <b-col md="4">
           <b-card border-variant="light" header="In Progress" class="text-center">
+            <!-- 
             <b-dropdown variant="outline-dark">
               <template slot="button-content">
                 Sort
@@ -17,6 +18,7 @@
               <b-dropdown-item href="#" @click="sortByAssignment">Remaining assignment</b-dropdown-item>
             </b-dropdown>
             <hr>
+            -->
             <b-list-group>
               <div class="d-flex justify-content-center mb-3" v-if="progresses === null">
                 <b-spinner label="Spinning"></b-spinner>
@@ -26,22 +28,33 @@
                 v-else-if="Object.keys(progresses).length < 1"
                 show
               >Your progress can not be calculated, please start to submit an assignment to challenge that you participated</b-alert>
-              <b-list-group-item
-                v-else
-                href="#some-link"
-                v-for="(progress,i) in progresses"
-                :key="i"
-              >
-                {{progress.title}}
-                <b-progress :value="progress.score" :max="progress.goal" show-progress animated></b-progress>
-                <small class="float-right">10 remain in 30 days</small>
-              </b-list-group-item>
+              <template v-else>
+                <nuxt-link
+                  class="list-group-item list-group-item-action"
+                  :to="{
+                    name: 'challenge',
+                    params: {
+                      id: progress.challengeId
+                    }
+                  }"
+                  v-for="(progress,i) in progresses"
+                  :key="i"
+                >
+                  <b-list-group-item>
+                    {{progress.title}}
+                    <b-progress :value="progress.score" :max="progress.goal" show-progress animated></b-progress>
+                    <small
+                      class="float-right"
+                    >{{progress.goal -progress.score }} assignment remaining</small>
+                  </b-list-group-item>
+                </nuxt-link>
+              </template>
             </b-list-group>
           </b-card>
         </b-col>
         <b-col>
           <b-card border-variant="light" header="Search a challenge" class="text-center">
-            <b-form @submit=searchChallenge inline>
+            <b-form @submit="searchChallenge" inline>
               <b-input v-model="search" placeholder="Write keywords then enter" class="w-100"></b-input>
             </b-form>
           </b-card>
@@ -103,7 +116,7 @@ export default {
   data() {
     return {
       progresses: null,
-      search: null,
+      search: null
     }
   },
   methods: {
