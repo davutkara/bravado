@@ -32,8 +32,7 @@
       <hr>
     </b-form-invalid-feedback>
     <b-button type="submit" size="lg" variant="primary">Login via account</b-button>
-
-    <b-button href size="lg" variant="danger">Login via Gmail</b-button>
+    <b-button type="reset" size="lg" variant="secondary">Reset form</b-button>
   </b-form>
 </template>
 
@@ -78,7 +77,11 @@ export default {
 
       return key !== value
     },
-    onReset: () => {},
+    onReset(e) {
+      e.preventDefault()
+      this.email = ''
+      this.password = ''
+    },
     ...mapActions({
       onSubmit(dispatch, e) {
         e.preventDefault()
