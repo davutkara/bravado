@@ -40,7 +40,7 @@
 - [ ] Comment Challenge
 - [ ] Earn Reward
 - [x] Submit assignment
-- [ ] Vote submission
+- [x] Vote submission
 
 ### Use case diagram
 
