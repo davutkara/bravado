@@ -1,16 +1,19 @@
 <template>
   <div>
     <b-container id="login-register">
-      <p id="mainheader">BRAVADO Registeration</p>
-      <nuxt-link to="/">Homepage</nuxt-link>
-      <b-row>
+      <p id="mainheader">BRAVADO Registration</p>
+      <nuxt-link to="/">
+        <b-button variant="light">&laquo; Back to Homepage</b-button>
+      </nuxt-link>
+      <b-row style="padding:1em;">
         <b-col md="6">
           <div id="socialdiv">
-            <p id="header" class="text-center">LOGIN FORM</p>
+            <p class="header text-center">LOGIN FORM</p>
             <login-form></login-form>
           </div>
         </b-col>
         <b-col md="6">
+          <p class="header text-center">REGISTER FORM</p>
           <register-form></register-form>
         </b-col>
       </b-row>
@@ -36,14 +39,16 @@ export default {
   background-color: lightblue;
   color: black;
   padding: 40px;
+  border-radius: 5vw;
 }
 
 #login-register {
   background: white;
-  padding: 10px;
+  padding: 1em;
+  border-radius: 5vw;
 }
 
-#header {
+.header {
   font-size: 30px;
   text-align: center;
 

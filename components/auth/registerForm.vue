@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Register</h2>
     <b-form @submit="onSubmit">
       <div class="form-group">
         <label for="firstName">First Name</label>
