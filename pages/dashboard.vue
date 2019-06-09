@@ -43,9 +43,7 @@
                   <b-list-group-item>
                     {{progress.title}}
                     <b-progress :value="progress.score" :max="progress.goal" show-progress animated></b-progress>
-                    <small
-                      class="float-right"
-                    >{{progress.goal -progress.score }} assignment remaining</small>
+                    <small>{{progress.goal -progress.score }} assignments remaining</small>
                   </b-list-group-item>
                 </nuxt-link>
               </template>
@@ -60,42 +58,30 @@
           </b-card>
           <hr>
           <b-card border-variant="light" header="Feeds">
-            <ul class="list-unstyled">
-              <b-media tag="li">
-                <b-img slot="aside" blank blank-color="#abc" width="64" alt="placeholder"></b-img>
-
-                <h5 class="mt-0 mb-1">List-based media object</h5>
-                <p class="mb-0">
-                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
-                  Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
-                  ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+            <div class="d-flex justify-content-center mb-3" v-if="feedLoader">
+              <b-spinner label="Spinning"></b-spinner>
+            </div>
+            <ul class="list-unstyled" v-else>
+              <b-media tag="li" v-for="(feed,i) in feedList" :key="i">
+                <b-img
+                  slot="aside"
+                  :src="JSON.parse(feed.reward).imageURL"
+                  width="64"
+                  height="64"
+                  alt="placeholder"
+                ></b-img>
+                <p class="mb-1">
+                  {{feed.name}} {{feed.surname}} has been
+                  <strong>{{feed.status | prettyStatus}}</strong> the
+                  <nuxt-link
+                    :to="{name:'challenge', params: {id : feed.challengeId}}"
+                  >{{feed.title}} challenge</nuxt-link>
                 </p>
-              </b-media>
-
-              <b-media tag="li" class="my-4">
-                <b-img slot="aside" blank blank-color="#cba" width="64" alt="placeholder"></b-img>
-
-                <h5 class="mt-0 mb-1">List-based media object</h5>
-                <p class="mb-0">
-                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
-                  Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
-                  ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </p>
-              </b-media>
-
-              <b-media tag="li">
-                <b-img slot="aside" blank blank-color="#bac" width="64" alt="placeholder"></b-img>
-
-                <h5 class="mt-0 mb-1">List-based media object</h5>
-                <p class="mb-0">
-                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.
-                  Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc
-                  ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </p>
+                <p class="mb-3">{{feed.date | timeago}}</p>
               </b-media>
             </ul>
             <div class="overflow-auto">
-              <b-pagination-nav :number-of-pages="10" use-router></b-pagination-nav>
+              <b-pagination v-model="page" :total-rows="feeds.length" :per-page="PER_PAGE"></b-pagination>
             </div>
           </b-card>
         </b-col>
@@ -107,19 +93,74 @@
 <script>
 import bravadoNavigation from '~/components/bravadoNavigation.vue'
 import { mapActions } from 'vuex'
+import TimeAgo from 'javascript-time-ago'
+// Load locale-specific relative date/time formatting rules.
+import en from 'javascript-time-ago/locale/en'
+
+// Add locale-specific relative date/time formatting rules.
+TimeAgo.addLocale(en)
+const timeAgo = new TimeAgo('en-US')
+
 export default {
   layout: 'user',
   components: { bravadoNavigation },
   created() {
     this.GET_PROGRESSES()
+    this.getFeeds()
+  },
+  async fetch({ store }) {
+    await store.dispatch('user/GET_PARTICIPATIONS')
   },
   data() {
     return {
       progresses: null,
-      search: null
+      search: null,
+      page: 1,
+      feeds: [],
+      PER_PAGE: 10,
+      feedLoader: null
+    }
+  },
+  filters: {
+    prettyStatus(val) {
+      if (val === 'gaveUp') return 'quit'
+      else if (val === 'inProgress') return 'joined'
+      else return val
+    },
+    timeago(datetime) {
+      return timeAgo.format(
+        new Date(datetime.replace('T', ' ').replace('.000Z', ''))
+      )
+    }
+  },
+  computed: {
+    feedList() {
+      var self = this
+      this.feedLoader = true
+      let borkenFeeds = [...this.feeds]
+      setTimeout(() => {
+        self.feedLoader = false
+      }, 1001)
+      return borkenFeeds.splice(this.PER_PAGE * (this.page - 1), this.PER_PAGE)
     }
   },
   methods: {
+    async getFeeds() {
+      this.feedLoader = true
+      let { data } = await this.$axios.post(
+        process.env.baseUrl + '/api/challenge/feeds',
+        {
+          challengesIds: Object.keys(this.$store.state.user.participations)
+        },
+        {
+          headers: {
+            authorization: `Bearer ${this.$store.state.auth.token}`
+          }
+        }
+      )
+      if (data.length) this.feeds = data
+      this.feedLoader = false
+    },
     searchChallenge(e) {
       e.preventDefault()
       this.$router.push({ name: 'challenges', params: { search: this.search } })

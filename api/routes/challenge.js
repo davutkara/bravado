@@ -392,4 +392,33 @@ export default function(router, db, cache) {
       )
     }
   )
+
+  /**
+   * Get feeds from challenge
+   * @only user
+   * @param int[] challengesIds
+   */
+  router.post(
+    '/challenge/feeds',
+    utils(db, cache).restrictByUserRole('user'),
+    (req, res) => {
+      const { challengesIds } = req.body
+      const sqlChallengeIds = challengesIds.join()
+
+      db.query(
+        `
+        SELECT challenge.challengeId, name,surname,progress.date,status, challenge.title, challenge.reward FROM progress 
+          INNER JOIN user ON progress.userId = user.userId 
+          INNER JOIN challenge ON challenge.challengeId = progress.challengeId
+        WHERE progress.challengeId IN (${sqlChallengeIds})  ORDER BY progress.date DESC LIMIT 0, 250
+        `,
+        [],
+        function(error, results, fields) {
+          if (error)
+            res.json({ status: 'error', msg: 'Unknown error', error: error })
+          else res.json(results)
+        }
+      )
+    }
+  )
 }
