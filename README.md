@@ -20,7 +20,7 @@
   - [ ] Stability graph
 - [ ] Dashboard Page
   - [x] User Progress
-  - [ ] Feeds
+  - [x] Feeds
   - [x] Search challenge form
 - [ ] Challenge Page
   - [x] About page
