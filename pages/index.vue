@@ -79,10 +79,12 @@ export default {
 </script>
 
 <style>
-#promotion {
-  z-index: 2;
-  position: relative;
-  margin-top: -20em;
+@media only screen and (min-width: 600px) {
+  #promotion {
+    z-index: 2;
+    position: relative;
+    margin-top: -20em;
+  }
 }
 </style>
 

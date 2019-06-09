@@ -31,9 +31,17 @@ export default {
 </script>
 
 <style>
-#wave-splitter {
-  margin-top: -9em;
-  z-index: 1;
-  position: relative;
+@media only screen and (min-width: 600px) {
+  #wave-splitter {
+    margin-top: -9em;
+    z-index: 1;
+    position: relative;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .carousel-caption {
+    padding-top: unset !important;
+  }
 }
 </style>
