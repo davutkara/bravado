@@ -22,9 +22,9 @@
   - [x] User Progress
   - [x] Feeds
   - [x] Search challenge form
-- [ ] Challenge Page
+- [x] Challenge Page
   - [x] About page
-  - [ ] Feeds page
+  - [x] Feeds page
   - [x] Participants page
   - [x] Quit Challenge
   - [x] Join Challange
