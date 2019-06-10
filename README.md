@@ -45,3 +45,29 @@
 ### Use case diagram
 
 ![Use Case diagram](./docs/img/use_case.png)
+
+### Screenshots
+
+#### index page
+
+![Bravado index page](./docs/img/ss_index.png)
+
+#### login register page
+
+![Bravado login register page](./docs/img/ss_login_register.png)
+
+#### profile page
+
+![Bravado profile page](./docs/img/ss_profile.png)
+
+#### dashboard page
+
+![Bravado profile page](./docs/img/ss_dashboard.png)
+
+#### create challenge page
+
+![Bravado profile page](./docs/img/ss_create_challenge.png)
+
+#### challenge page
+
+![Bravado profile page](./docs/img/ss_challenge.png)
