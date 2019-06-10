@@ -8,7 +8,7 @@
 - run!
   `npm run dev`
 
-### todos
+### features
 
 - [x] Login
 - [x] Register
