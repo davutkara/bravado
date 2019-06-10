@@ -18,7 +18,7 @@
   - [x] Created Challenges
   - [x] In progress challanges
   - [ ] Stability graph
-- [ ] Dashboard Page
+- [x] Dashboard Page
   - [x] User Progress
   - [x] Feeds
   - [x] Search challenge form
