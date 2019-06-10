@@ -22,7 +22,10 @@
         </div>
       </template>
       <b-containe v-else>
-        <b-card v-if="list.length " :title="list[index].name + ' ' + list[index].surname">
+        <b-card
+          v-if="list.length && list[index] !== undefined "
+          :title="list[index].name + ' ' + list[index].surname"
+        >
           <b-card-text>{{list[index].content}}</b-card-text>
         </b-card>
       </b-containe>
