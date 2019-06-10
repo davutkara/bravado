@@ -46,6 +46,10 @@
 
 ![Use Case diagram](./docs/img/use_case.png)
 
+### Deployment diagram
+
+![Deployment diagram](./docs/img/deployment_diagram.png)
+
 ### Screenshots
 
 #### index page
